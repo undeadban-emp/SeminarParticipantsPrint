@@ -31,13 +31,8 @@ class SettingsController extends Controller
         if (request()->ajax()) {
             $data = CertificateImage::get();
             return Datatables::of($data)
-            // ->addColumn('image', function ($row) {
-            //     $url= asset('images/'.$row->file_path);
-            //     return '<img src="'.$url.'" border="0" width="50" height="50" class="img-rounded" align="center" />';
-            // })
         ->make(true);
         }
-        // return view('user.settings');
     }
 
 
@@ -63,7 +58,8 @@ class SettingsController extends Controller
             $image_path = "/images/" . $filename;
         }
             $product = new CertificateImage([
-                "file_path" => $filename
+                "file_path" => $filename,
+                "status" => '0'
             ]);
             $product->save();
         return view('user.settings');

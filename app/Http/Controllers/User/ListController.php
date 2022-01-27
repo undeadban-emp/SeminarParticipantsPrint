@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Barangay;
+use App\CertificateImage;
 use App\Participant;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
@@ -19,7 +21,8 @@ class ListController extends Controller
     public function index()
     {
         $municipality = City::select('code', 'name')->get();
-        return view('user.list', compact('municipality'));
+        $barangay = Barangay::select('code', 'name')->get();
+        return view('user.list', compact('municipality', 'barangay'));
     }
 
     public function ListOfParticipants(string $municipality_code = '*')
@@ -46,22 +49,24 @@ class ListController extends Controller
     }
 
     public function print(Request $request, $id){
+        $certificateImage = CertificateImage::where('status', '1')->first();
         $participantsName = Participant::find($id);
         $pdf = App::make('snappy.pdf.wrapper');
         $pdf->loadView('user.print',
-            compact('participantsName'))
+            compact('participantsName', 'certificateImage'))
             ->setPaper('a4')
             ->setOrientation('landscape');
         return $pdf->inline();
     }
 
     public function printAll(Request $request, string $municipality_code = '*'){
+        $certificateImage = CertificateImage::where('status', '1')->first();
         $participantsNameAll = Participant::select('firstname', 'middlename', 'lastname');
         $participantsNameAll = ($municipality_code != '*') ? $participantsNameAll->where('city', $municipality_code)->get(): $participantsNameAll->get();
         $count = Participant::count();
         $pdf = App::make('snappy.pdf.wrapper');
         $pdf->loadView('user.printAll',
-            compact('participantsNameAll', 'count'))
+            compact('participantsNameAll', 'count', 'certificateImage'))
             ->setPaper('a4')
             ->setOrientation('landscape');
         return $pdf->inline();
@@ -86,7 +91,24 @@ class ListController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'firstName' => 'required',
+            'middleName' => 'required',
+            'lastName' => 'required',
+        ]);
+        $participant = new Participant([
+            "firstname" => $request['firstName'],
+            "middlename" => $request['middleName'],
+            "lastname" => $request['lastName'],
+            "city" => $request['municipalCity'],
+            "barangay" => $request['barangay'],
+            "age" => $request['age'],
+            "contact_number" => $request['contactNo'],
+            "about_me" => $request['aboutMe'],
+        ]);
+        $participant->save();
+        $status = 'Successfully Added';
+        return back()->with(['status' => $status]);
     }
 
     /**

@@ -11,7 +11,7 @@
             height: 100% !important;
         }
         body {
-                background: url("{{ 'file:///laragon/www/TrainingPrint/public/assets/images/certificate.jpg' }}") no-repeat;
+                background: url("file:///laragon/www/TrainingPrint/public/images/{{ $certificateImage->file_path }}") no-repeat;
                 -webkit-background-size: cover;
                 -o-background-size: cover;
                 -moz-background-size: cover;
