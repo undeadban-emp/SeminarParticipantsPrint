@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     $municipality = City::select('code', 'name')->get();
     $count = Participant::get()->count();
-
     $barobo = Participant::select('city')->where('city', '166801000')->count();
     $bayabas = Participant::select('city')->where('city', '166802000')->count();
     $bislig = Participant::select('city')->where('city', '166803000')->count();
@@ -46,5 +45,9 @@ Route::resource('/list-of-participants', 'User\ListController');
 Route::get('/listOfParticipants/data/{municipality_code}', 'User\ListController@listOfParticipants');
 Route::get('/print/{id}', 'User\ListController@print');
 Route::get('/printAll/{municipality_code}', 'User\ListController@printAll');
+Route::resource('settings', 'User\SettingsController');
+Route::put('/settings/update/{id}', 'User\SettingsController@update')->name('update');
+Route::delete('/settings/delete/{id}', 'User\SettingsController@destroy')->name('destroy');
+Route::get('/CertificateImageList', 'User\SettingsController@CertificateImageList');
 
 

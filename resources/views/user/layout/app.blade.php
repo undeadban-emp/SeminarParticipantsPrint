@@ -40,6 +40,13 @@
                     <span>List of Participants</span>
                 </a>
             </li>
+            <li
+                class="sidebar-item @yield('settingsActive') ">
+                <a href="{{ url('/settings') }}" class='sidebar-link'>
+                    <i class="bi bi-pen-fill"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
 
         </ul>
     </div>
